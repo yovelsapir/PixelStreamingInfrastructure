@@ -3,7 +3,7 @@
 import type {
     FlagsIds,
     SettingFlag
-} from '@epicgames-ps/lib-pixelstreamingfrontend-ue5.2';
+} from '@yovelsapir/lib-pixelstreamingfrontend-ue5.2';
 import { SettingUIBase } from './SettingUIBase';
 
 export class SettingUIFlag<
