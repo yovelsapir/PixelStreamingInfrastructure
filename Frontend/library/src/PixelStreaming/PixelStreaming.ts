@@ -60,7 +60,7 @@ export class PixelStreaming {
     private _videoStartTime: number;
     private _inputController: boolean;
 
-    private _eventEmitter: EventEmitter;
+    public eventEmitter: EventEmitter;
 
     /**
      * @param config - A newly instantiated config object
@@ -74,7 +74,7 @@ export class PixelStreaming {
             this._videoElementParent = overrides.videoElementParent;
         }
 
-        this._eventEmitter = new EventEmitter();
+        this.eventEmitter = new EventEmitter();
 
         this.configureSettings();
 
@@ -282,7 +282,7 @@ export class PixelStreaming {
             }
         );
 
-        this.config._registerOnChangeEvents(this._eventEmitter);
+        this.config._registerOnChangeEvents(this.eventEmitter);
     }
 
     /**
@@ -367,7 +367,7 @@ export class PixelStreaming {
      * Emit an event on auto connecting
      */
     _onWebRtcAutoConnect() {
-        this._eventEmitter.dispatchEvent(new WebRtcAutoConnectEvent());
+        this.eventEmitter.dispatchEvent(new WebRtcAutoConnectEvent());
         this._showActionOrErrorOnDisconnect = true;
     }
 
@@ -375,14 +375,14 @@ export class PixelStreaming {
      * Set up functionality to happen when receiving a webRTC answer
      */
     _onWebRtcSdp() {
-        this._eventEmitter.dispatchEvent(new WebRtcSdpEvent());
+        this.eventEmitter.dispatchEvent(new WebRtcSdpEvent());
     }
 
     /**
      * Emits a StreamLoading event
      */
     _onStreamLoading() {
-        this._eventEmitter.dispatchEvent(new StreamLoadingEvent());
+        this.eventEmitter.dispatchEvent(new StreamLoadingEvent());
     }
 
     /**
@@ -402,7 +402,7 @@ export class PixelStreaming {
             this._webRtcController.setDisconnectMessageOverride('');
         }
 
-        this._eventEmitter.dispatchEvent(
+        this.eventEmitter.dispatchEvent(
             new WebRtcDisconnectedEvent({
                 eventString,
                 showActionOrErrorOnDisconnect:
@@ -418,28 +418,28 @@ export class PixelStreaming {
      * Handles when Web Rtc is connecting
      */
     _onWebRtcConnecting() {
-        this._eventEmitter.dispatchEvent(new WebRtcConnectingEvent());
+        this.eventEmitter.dispatchEvent(new WebRtcConnectingEvent());
     }
 
     /**
      * Handles when Web Rtc has connected
      */
     _onWebRtcConnected() {
-        this._eventEmitter.dispatchEvent(new WebRtcConnectedEvent());
+        this.eventEmitter.dispatchEvent(new WebRtcConnectedEvent());
     }
 
     /**
      * Handles when Web Rtc fails to connect
      */
     _onWebRtcFailed() {
-        this._eventEmitter.dispatchEvent(new WebRtcFailedEvent());
+        this.eventEmitter.dispatchEvent(new WebRtcFailedEvent());
     }
 
     /**
      * Handle when the Video has been Initialized
      */
     _onVideoInitialized() {
-        this._eventEmitter.dispatchEvent(new VideoInitializedEvent());
+        this.eventEmitter.dispatchEvent(new VideoInitializedEvent());
         this._videoStartTime = Date.now();
     }
 
@@ -448,7 +448,7 @@ export class PixelStreaming {
      * @param latency - latency test results object
      */
     _onLatencyTestResult(latencyTimings: LatencyTestResults) {
-        this._eventEmitter.dispatchEvent(
+        this.eventEmitter.dispatchEvent(
             new LatencyTestResultEvent({ latencyTimings })
         );
     }
@@ -468,7 +468,7 @@ export class PixelStreaming {
             this._webRtcController.videoAvgQp
         );
 
-        this._eventEmitter.dispatchEvent(
+        this.eventEmitter.dispatchEvent(
             new StatsReceivedEvent({ aggregatedStats: videoStats })
         );
     }
@@ -478,7 +478,7 @@ export class PixelStreaming {
      * @param QP - the quality number of the stream
      */
     _onVideoEncoderAvgQP(QP: number) {
-        this._eventEmitter.dispatchEvent(
+        this.eventEmitter.dispatchEvent(
             new VideoEncoderAvgQPEvent({ avgQP: QP })
         );
     }
@@ -488,7 +488,7 @@ export class PixelStreaming {
      * @param settings - initial UE app settings
      */
     _onInitialSettings(settings: InitialSettings) {
-        this._eventEmitter.dispatchEvent(
+        this.eventEmitter.dispatchEvent(
             new InitialSettingsEvent({ settings })
         );
         if (settings.PixelStreamingSettings) {
@@ -662,7 +662,7 @@ export class PixelStreaming {
      * @returns
      */
     public dispatchEvent(e: PixelStreamingEvent): boolean {
-        return this._eventEmitter.dispatchEvent(e);
+        return this.eventEmitter.dispatchEvent(e);
     }
     
     /**
@@ -674,7 +674,7 @@ export class PixelStreaming {
         T extends PixelStreamingEvent['type'],
         E extends PixelStreamingEvent & { type: T }
     >(type: T, listener: (e: Event & E) => void) {
-        this._eventEmitter.addEventListener(type, listener);
+        this.eventEmitter.addEventListener(type, listener);
     }
 
     /**
@@ -686,7 +686,7 @@ export class PixelStreaming {
         T extends PixelStreamingEvent['type'],
         E extends PixelStreamingEvent & { type: T }
     >(type: T, listener: (e: Event & E) => void) {
-        this._eventEmitter.removeEventListener(type, listener);
+        this.eventEmitter.removeEventListener(type, listener);
     }
 
     /**
