@@ -56,7 +56,7 @@ export class AFKController {
     /**
      * Start the warning timer if a timeout is set greater that 0 seconds
      */
-    startAfkWarningTimer() {
+    startAfkWarningTimer(customTimeout?: number) {
         if (
             this.config.getNumericSettingValue(
                 NumericParameters.AFKTimeoutSecs
@@ -67,7 +67,7 @@ export class AFKController {
         } else {
             this.active = false;
         }
-        this.resetAfkWarningTimer();
+        this.resetAfkWarningTimer(customTimeout);
     }
 
     /**
@@ -90,12 +90,12 @@ export class AFKController {
     /**
      * If the user interacts then reset the warning timer.
      */
-    resetAfkWarningTimer() {
+    resetAfkWarningTimer(customTimeout?: number) {
         if (this.active && this.config.isFlagEnabled(Flags.AFKDetection)) {
             clearTimeout(this.warnTimer);
             this.warnTimer = setTimeout(
                 () => this.activateAfkEvent(),
-                this.config.getNumericSettingValue(
+                customTimeout || this.config.getNumericSettingValue(
                     NumericParameters.AFKTimeoutSecs
                 ) * 1000
             );
